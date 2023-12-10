@@ -1,0 +1,29 @@
+Options +FollowSymLinks
+RewriteEngine on
+
+DirectoryIndex gate.php
+
+ErrorDocument 404 /404.php
+
+
+# Remove Trailing Slash
+RewriteRule ^(.*)\/(\?.*)?$ $1$2 [R=301,L]
+
+# Remove WWW
+RewriteCond %{HTTP_HOST} ^www\.(.*)$ [NC]
+RewriteRule ^(.*)$ http://%1/$1 [R=301,L]
+
+RewriteCond %{REQUEST_URI} ^system.*
+RewriteRule ^(.*)$ /gate.php?/$1 [L]
+
+RewriteEngine on
+RewriteCond %{REQUEST_URI} ^application.*
+RewriteRule ^(.*)$ /gate.php?/$1 [L]
+
+RewriteCond %{REQUEST_FILENAME} !-f
+RewriteCond %{REQUEST_FILENAME} !-d
+RewriteRule ^(.*)$ gate.php?/$1 [L]
+
+# Only Allow CSS|JS|EOT|SVG|TTF|WOFF files work in "application" folder
+RewriteCond %{REQUEST_URI} !\.(?:css|js|eot|svg|ttf|woff)$ [NC]
+RewriteRule ^application/ - [L,F]
